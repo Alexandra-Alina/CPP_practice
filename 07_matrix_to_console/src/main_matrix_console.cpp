@@ -2,65 +2,51 @@
 #include <string>
 #include <vector>
 
-/**
-	Define a simple matrix.
-*/
+using namespace std;
+
 class Matrix
 {
 private:
 	size_t column_count;
 	size_t line_count;
 
-	// TODO: store the data
-	// hints: you can use std::string, std::vectors + string, char**, vector<vector<char>>, etc
+    vector < vector < char > > matrice;
+
 public:
 	Matrix(size_t numColumnsX, size_t numLinesY)
-		// TODO: add functionality
 	{
-		// TODO: add functionality
+		column_count = numColumnsX;
+		line_count = numLinesY;
+
+		// matrix[line_count][column_count]
+		matrice.assign(line_count, vector<char>(column_count));
 	}
 
 	// Set an entire line
 	void setLine(size_t line_number, const std::string& data)
 	{
+	    // primim data ca argument, eliberam linia si o repopulam
+		matrice[line_number].clear();
+		for (int i = 0; data.c_str()[i]; i++)
+			matrice[line_number].push_back(data.c_str()[i]);
 	}
 
-	//OPTIONAL
-	//char getCellXY(size_t x, size_t y, char cell_content)
-	//{
-	//	// TODO: add functionality
-	//	return 0;
-	//}
-
-	/**
-		Sets the cell content for a specific cell identified by its coordinates (X and Y)
-		@param x The horizontal coordinate of the cell to set. Index starts at zer0.
-		@param y The vertical coordinate of the cell to set. Index starts at zer0.
-		@param cell_content A cell char to set.
-
-		E.g.
-		 X axis: 0 -------- ... -------> Width
-		 Y axis
-		 0       0,0  1,0                W-1, 0
-		 |       0,1  1,1                     
-		 |       0,2                      
-		 .                             
-		 .                             
-		 .                             
-		 |       0, H-1     ...          W-1, H-1           
-		 V
-
-		 Height
-	*/
 	void setCellXY(size_t x, size_t y, char cell_content)
 	{
-		// TODO: add functionality
+	    if (x < 0 || x >= column_count) return;
+		if (y < 0 || y >= line_count) return;
+		matrice[y][x] = cell_content;
 	}
 
 	void print()
 	{
-		// print all lines and columns
-		// TODO: add functionality
+	    for (auto row : matrice) {
+			for (auto it : row)
+				cout << it;
+			cout << endl;
+		}
+
+		cout << endl;
 	}
 };
 
