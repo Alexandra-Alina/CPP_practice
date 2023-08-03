@@ -1,21 +1,31 @@
 ﻿#include <iostream>
 #include <string>
 #include <vector>
+#include <fstream>
 
-/**
-	Define a simple book.
-*/
+
+using namespace std;
+
 class Book
 {
 public:
 	std::string name;
 	std::string authors;
 
-	void print()
+	Book(string name, string authors)
 	{
-		std::cout << this->name << std::endl;
-		std::cout << "\t(by " << this->authors << ")" << std::endl;
+	    this->name = name;
+	    this->authors = authors;
 	}
+
+
+
+        void print()
+	    {
+	       	std::cout << this->name << std::endl;
+            std::cout << "\t(by " << this->authors << ")" << std::endl;
+
+	    }
 };
 
 /**
@@ -33,15 +43,22 @@ public:
 */
 std::vector<Book> readBooksFromTextFile(const std::string& file_name)
 {
-	std::vector<Book> results;
-	// TODO: BEGIN read the file -------------------------------------
+	vector<Book> results;
+	ifstream myFile(file_name);
+    string carte;
+	string autor;
+
+	while(getline(myFile, carte))
+    {
+        getline(myFile, autor);
 
 
-	// E.g. Book myBook;
-	//		...
-	//		results.emplace_back(myBook);
+		Book myBook = Book(carte, autor);
+		results.emplace_back(myBook); // pune cartea la finalul vectorului
+    }
 
-	// TODO: END read file and add to results vector ------------------
+	myFile.close();
+
 	return results;
 }
 
