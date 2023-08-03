@@ -8,13 +8,14 @@
 
 struct Author
 {
-	char name[MAX_NAME_LEN + 1];
+	//char name[MAX_NAME_LEN + 1];
+    char* name = nullptr;
 
-	void setName(char nameToSet[MAX_NAME_LEN])
+	void setName(char* nameToSet)
 	{
-		strncpy(name, nameToSet, MAX_NAME_LEN);
-		// overwrite the last character
-		name[MAX_NAME_LEN] = 0;
+		int len = strlen(nameToSet) +1;
+		name = (char*)malloc(len);
+		strncpy(name, nameToSet, len);
 	}
 
 	void print()
@@ -26,14 +27,14 @@ struct Author
 struct Book
 {
 	int id;
-	char title[50];
+	char title[MAX_TITLE_LEN + 1]; // 50 chr + NULL
 
 	int numAuthors;
 	Author authors[5];
 
 	void addAuthor(Author author)
 	{
-		// TODO: add an author to the container authors array.
+		authors[numAuthors] = author;
 		numAuthors++;
 	}
 
@@ -41,16 +42,30 @@ struct Book
 	{
 		std::cout << "Book #" << id << std::endl;
 		std::cout << "------" << std::endl;
-		std::cout << this->title << std::endl;
+		std::cout << this->title << std::endl; // nu mai mult de 50 caractere
 
 		// TODO: add all authors
-
+        int i;
+		for (i = 0; i < numAuthors; i++)
+		{
+			std::cout << authors[i].name << std::endl;
+		}
+		std::cout << std::endl;
 	}
 };
 
 void setBookName(Book& book, std::string name)
 {
+    book.title[MAX_TITLE_LEN] = NULL;
 	strncpy(book.title, name.c_str(), MAX_TITLE_LEN);
+}
+
+void eliberareMem(Book book)
+{
+    for( int a = 0; a < book.numAuthors; a++)
+    {
+        free(book.authors[a].name);
+    }
 }
 
 int main()
@@ -63,7 +78,7 @@ int main()
 	// Load the data into books
 	book1.id = 1;
 	book1.numAuthors = 0;
-	setBookName(book1, u8"The origin of truth (nu există, nu o căutați)");
+	setBookName(book1, "The origin of truth");
 	author.setName("Gusti");
 	book1.addAuthor(author);
 
@@ -81,7 +96,7 @@ int main()
 
 	author.setName("Ola Rosling");
 	book3.addAuthor(author);
-	
+
 	author.setName("Anna Rosling Ronnlund");
 	book3.addAuthor(author);
 
@@ -89,5 +104,9 @@ int main()
 	book1.print();
 	book2.print();
 	book3.print();
+
+	eliberareMem(book1);
+	eliberareMem(book2);
+	eliberareMem(book3);
 	return 0;
 }
