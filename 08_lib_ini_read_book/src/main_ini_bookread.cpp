@@ -18,6 +18,12 @@ public:
 	std::string name;
 	std::string authors;
 
+	Book(string name, string authors)
+	{
+		this->name = name;
+		this->authors = authors;
+	}
+
 	void print()
 	{
 		std::cout << this->name << std::endl;
@@ -25,40 +31,32 @@ public:
 	}
 };
 
-/**
-	Reads a vector of books from an INI file.
-	Note: the INI file shall contain a general books section with the number of books contained,
-	and another INI section for each book, named [book.N], where N is a number/counter
 
-	[books]
-	count = 2;
-
-	[book.1]
-	name=The origin of truth
-	author=Gusti
-	[book.2]
-	name  = Arhanghelul Raul
-	author=Ovidiu Eftimie
-
-	@param file_name The name of the file to read from (must include path).
-	@return Vector of books.
-*/
 std::vector<Book> readBooksFromIniFile(const std::string& file_name)
 {
 	std::vector<Book> results;
-	// TODO: BEGIN read the file -------------------------------------
-	
-	// E.g. Book myBook;
-	//		// build the section name (E.g. book.1)
-	//		std::stringstream ss;
-	//		ss << "book." << (i + 1);
-	//		// Copy the stream to a string you can use
-	//		std::string section_name(ss.str());
+	CSimpleIniA ini;
+	ini.LoadFile(file_name.c_str());
 
-	//		...
-	//		results.emplace_back(myBook);
+	// Get the number of books
+	const char* count_str = ini.GetValue("books", "count", "");
+	int count = stoi(count_str);
 
-	// TODO: END read file and add to results vector ------------------
+	// Read the books
+
+	for (int i = 1; i <= count; i++)
+	{
+		stringstream ss;
+		ss << "book." << i;
+		string section_name(ss.str());
+		const char* carte = ini.GetValue(section_name.c_str(), "name", "");
+		const char* autor = ini.GetValue(section_name.c_str(), "author", "");
+
+		Book book = Book(carte, autor);
+		results.push_back(book);
+	}
+
+
 	return results;
 }
 
@@ -68,7 +66,7 @@ int main()
 	// Using the SimpleINI C++ Lib: https://github.com/brofield/simpleini
 
 	// Read the data
-	std::string input_data("PATH_TO_INI_FILE.ini");
+	std::string input_data("../../data/ermahgerd_berks.ini");
 	std::cout << "Reading the data from " << input_data << std::endl;
 	std::vector<Book> books_from_file = readBooksFromIniFile(input_data);
 
@@ -81,3 +79,5 @@ int main()
 
 	return 0;
 }
+
+
